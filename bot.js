@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, SlashCommandBuilder, REST, Routes } = require('discord.js');
+const { Client, GatewayIntentBits, SlashCommandBuilder, REST, Routes, MessageFlags } = require('discord.js');
 const net = require('net');
 // Load .env file only if it exists (for local development)
 // On hosting platforms like Koyeb, environment variables are set directly
@@ -103,7 +103,8 @@ client.on('interactionCreate', async interaction => {
                     content: `✅ **Server is ONLINE!**\n` +
                             `🌐 IP: \`${SERVER_IP}\`\n` +
                             `🔌 Port: \`${SERVER_PORT}\`\n` +
-                            `⏰ Checked at: <t:${Math.floor(Date.now() / 1000)}:R>`
+                            `⏰ Checked at: <t:${Math.floor(Date.now() / 1000)}:R>`,
+                    flags: MessageFlags.SuppressNotifications
                 });
             } else {
                 await interaction.editReply({
@@ -111,13 +112,15 @@ client.on('interactionCreate', async interaction => {
                             `🌐 IP: \`${SERVER_IP}\`\n` +
                             `🔌 Port: \`${SERVER_PORT}\`\n` +
                             `⚠️ Error: ${status.error}\n` +
-                            `⏰ Checked at: <t:${Math.floor(Date.now() / 1000)}:R>`
+                            `⏰ Checked at: <t:${Math.floor(Date.now() / 1000)}:R>`,
+                    flags: MessageFlags.SuppressNotifications
                 });
             }
         } catch (error) {
             await interaction.editReply({
                 content: `❌ **Error checking server status**\n` +
-                        `Error: ${error.message}`
+                        `Error: ${error.message}`,
+                flags: MessageFlags.SuppressNotifications
             });
         }
     }
@@ -127,7 +130,8 @@ client.on('interactionCreate', async interaction => {
             content: `📋 **Server Information**\n` +
                     `🌐 IP Address: \`${SERVER_IP}\`\n` +
                     `🔌 Port: \`${SERVER_PORT}\`\n` +
-                    `🎮 Game: Minecraft`
+                    `🎮 Game: Minecraft`,
+            flags: MessageFlags.SuppressNotifications
         });
     }
 });
