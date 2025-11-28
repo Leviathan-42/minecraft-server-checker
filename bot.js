@@ -1,6 +1,12 @@
 const { Client, GatewayIntentBits, SlashCommandBuilder, REST, Routes } = require('discord.js');
 const net = require('net');
-require('dotenv').config();
+// Load .env file only if it exists (for local development)
+// On hosting platforms like Koyeb, environment variables are set directly
+try {
+    require('dotenv').config();
+} catch (e) {
+    // dotenv not available or .env file doesn't exist - that's okay for hosting
+}
 
 const client = new Client({
     intents: [
@@ -133,8 +139,17 @@ client.once('ready', () => {
 });
 
 // Login to Discord
+// Debug: Check if environment variables are set (without showing the actual token)
+console.log('Checking environment variables...');
+console.log('DISCORD_TOKEN is set:', !!process.env.DISCORD_TOKEN);
+console.log('CLIENT_ID is set:', !!process.env.CLIENT_ID);
+
 if (!process.env.DISCORD_TOKEN) {
-    console.error('❌ Error: DISCORD_TOKEN is not set in .env file');
+    console.error('❌ Error: DISCORD_TOKEN environment variable is not set');
+    console.error('Make sure you set DISCORD_TOKEN in Koyeb:');
+    console.error('1. Go to your Koyeb app settings');
+    console.error('2. Go to "Environment" or "Secrets" tab');
+    console.error('3. Add DISCORD_TOKEN with your bot token');
     process.exit(1);
 }
 
