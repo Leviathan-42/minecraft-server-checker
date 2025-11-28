@@ -1,5 +1,6 @@
 const { Client, GatewayIntentBits, SlashCommandBuilder, REST, Routes, MessageFlags } = require('discord.js');
 const net = require('net');
+const http = require('http');
 // Load .env file only if it exists (for local development)
 // On hosting platforms like Koyeb, environment variables are set directly
 try {
@@ -137,9 +138,20 @@ client.on('interactionCreate', async interaction => {
 });
 
 // Bot ready event
-client.once('ready', () => {
+client.once('clientReady', () => {
     console.log(`✅ Bot is online! Logged in as ${client.user.tag}`);
     registerCommands();
+    
+    // Start HTTP server for health checks (Koyeb requires this)
+    const PORT = process.env.PORT || 8000;
+    const server = http.createServer((req, res) => {
+        res.writeHead(200, { 'Content-Type': 'text/plain' });
+        res.end('OK');
+    });
+    
+    server.listen(PORT, () => {
+        console.log(`✅ Health check server running on port ${PORT}`);
+    });
 });
 
 // Login to Discord
